@@ -1,0 +1,19 @@
+{
+  "name": "emvents-api",
+  "version": "1.0.0",
+  "description": "Simple REST API using Node.js - Microverse course",
+  "main": "helloworld.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/teodoradima/emvents-api.git"
+  },
+  "author": "Mercy and Teodora",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/teodoradima/emvents-api/issues"
+  },
+  "homepage": "https://github.com/teodoradima/emvents-api#readme"
+}
