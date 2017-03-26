@@ -2,7 +2,7 @@
   "name": "emvents-api",
   "version": "1.0.0",
   "description": "Simple REST API using Node.js - Microverse course",
-  "main": "helloworld.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
