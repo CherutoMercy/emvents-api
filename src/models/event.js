@@ -18,6 +18,5 @@ event1 = new Event("0", "Pair programming", "A pair of programmers learning node
 event2 = new Event("1", "Nodejs meetup", "Javascript geeks", "12/04/2017");
 
 const events = [event1, event2];
-console.log(events);
 
 module.exports = Event;
