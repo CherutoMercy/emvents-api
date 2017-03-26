@@ -1,5 +1,6 @@
 const express = require('express');
-const app = express();
+const app     = express();
+const model	  = require('/src/models');
 
 app.get('/', (req, res) => {
     res.send('GET Hello World!');
