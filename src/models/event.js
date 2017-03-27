@@ -1,10 +1,3 @@
-// const Event = {
-// 	id   :"0",
-// 	title:["Pair programming","Bucharest Nodejs"]
-// 	description:"A pair of programmers learning nodejs",
-// 	date:["20/03/2017","21/03/2017"]
-// };
-
 let Event = class Event {
   constructor(id, title, description, date) {
     this.id = id;
@@ -19,4 +12,5 @@ event2 = new Event("1", "Nodejs meetup", "Javascript geeks", "12/04/2017");
 
 const events = [event1, event2];
 
-module.exports = Event;
+// we were exporting the Event class instead of the events array
+module.exports = events;
