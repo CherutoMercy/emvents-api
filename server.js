@@ -27,12 +27,40 @@ const postEvent = (req, res) => {
     res.json(model);
 }
 
+const updateEvent = (req, res) => {
+    const id = req.params.id;
+    let result;
+
+    for (let i = 0; i < model.length; i++) {
+        if (model[i].id == id) {
+            model[i].title = "Updated title";
+            model[i].description = "Change description";
+            model[i].venue = "venue";
+            result = model[i];
+        }
+    }
+    res.json(result);
+}
+
+const deleteEvent = (req, res) => {
+    const id = req.params.id;
+
+    let result = model.filter(model => {
+        return id.indexOf(model.id) === -1;
+    });
+
+    res.json(result);
+}
+
 app.route('/events')
 	.get(getAllEvents)
     .post(postEvent);
+    
 
 app.route('/events/:id')
-    .get(getEventsById);
+    .get(getEventsById)
+    .put(updateEvent)
+    .delete(deleteEvent);
 
 app.get('/', (req, res) => {
         res.send('Get Available Events!');
