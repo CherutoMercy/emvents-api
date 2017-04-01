@@ -10,6 +10,12 @@ const events = [
     title: "Nodejs meetup",
     description: "Javascript geeks",
     date: "12/04/2017"
+  },
+  {
+    id: "2",
+    title: "MongoDB",
+    description: "Learn how nosql works",
+    date: "16/04/2017"
   }
 ];
 
