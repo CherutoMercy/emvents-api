@@ -62,4 +62,14 @@ describe('events',() =>{
             done();
         });
      });
+
+     it('it should delete an event',(done) =>{
+        chai.request(server)
+        .delete('/events/1')
+        .end((err,res) =>{
+            res.should.have.status(200);
+            //res.body.length.should.be.eql(2);
+            done();
+        });
+     });
 });
