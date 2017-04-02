@@ -52,4 +52,14 @@ describe('events',() =>{
             done();
         });
      });
+
+     it ('it should update existing event', (done)=>{
+        chai.request(server)
+        .put('/events/0')
+        .end((err,res) =>{
+            res.should.have.status(200);
+            res.should.be.a('object');
+            done();
+        });
+     });
 });
