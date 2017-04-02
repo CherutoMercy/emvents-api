@@ -17,4 +17,25 @@ describe('events',() =>{
             done();
         });
     });
+     it('it should get an event by its id',(done) =>{
+        chai.request(server)
+        .get('/events/0')
+        .end((err,res)=>{
+            res.should.have.status(200);
+            res.should.be.a('object');
+            res.body.should.have.property('title');
+            res.body.should.have.property('description');
+            res.body.should.have.property('date');
+            res.body.should.have.property('id');
+            done();
+        });
+    });
+     it('it should get an event with wrong id',(done) =>{
+        chai.request(server)
+        .get('/events/45')
+        .end((err,res)=>{
+            res.body.length.should.be.eql(0);
+            done();
+        });
+    });
 });
