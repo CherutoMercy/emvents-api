@@ -7,6 +7,7 @@ const should = chai.should();
 chai.use(chaiHttp);
 
 describe('events',() =>{
+
     it('it should get all events', (done) =>{
         chai.request(server)
         .get('/events')
@@ -17,6 +18,7 @@ describe('events',() =>{
             done();
         });
     });
+
      it('it should get an event by its id',(done) =>{
         chai.request(server)
         .get('/events/0')
@@ -30,6 +32,7 @@ describe('events',() =>{
             done();
         });
     });
+
      it('it should get an event with wrong id',(done) =>{
         chai.request(server)
         .get('/events/45')
@@ -38,4 +41,15 @@ describe('events',() =>{
             done();
         });
     });
+
+     it('it should post a new event',(done) =>{
+        chai.request(server)
+        .post('/events')
+        .end((err,res) =>{
+            res.should.have.status(200);
+            res.body.should.be.a('array');
+            res.body.length.should.be.eql(4);
+            done();
+        });
+     });
 });
