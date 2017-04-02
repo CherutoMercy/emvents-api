@@ -70,7 +70,7 @@ app.route('/events/:id')
             .then(res.json(result))
             .catch((err) => { console.log(err) });
     });
-
+module.exports = app;
 app.listen(3000, () => {
     console.log('Awesome server running on port 3000');
 });
