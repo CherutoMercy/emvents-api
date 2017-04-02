@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/teodoradima/emvents-api#readme",
   "dependencies": {
-    "express": "^4.15.2"
+    "express": "^4.15.2",
+    "promise": "^7.1.1"
   }
 }
