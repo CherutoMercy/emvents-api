@@ -3,6 +3,38 @@ const app     = express();
 const model   = require('./src/models/event');
 const Promise = require('promise');
 
+const MongoClient = require('mongodb').MongoClient,
+           assert = require('assert');
+
+const url = 'mongodb://localhost:27017/emvents';
+let db;
+
+MongoClient.connect(url, (err, database) => {
+    assert.equal(null, err);
+    db = database;
+    app.listen(3000, () => {
+        console.log('Awesome server running on port 3000');
+    });
+});
+
+const insertEvent = (db, callback) => {
+const collection = db.collection('documents');
+collection.insertOne(
+    {
+        id: "3",
+        title: "New Event",
+        description: "Hope this event will be created",
+        date: "1/4/2017"
+    },
+    
+    (err, result) => {
+    assert.equal(err, null);
+    assert.equal(1, result.insertedCount);
+    console.log("Inserted 1 event into the collection");
+    callback(result);
+  });
+}
+
 app.get('/', (req, res) => {
     res.send('Get Available Events!');
 });
@@ -14,17 +46,13 @@ app.route('/events')
             .catch((err) => { console.log(err) });
     })
 
-    .post((req, res) => {
-        const event = {
-            id: "3",
-            title: "New Event",
-            description: "Hope this event will be created",
-            date: "1/4/2017"
-        }
+    .post((req, res) => {    
         return new Promise((req, res) => {
-            model.push(event);
+            insertEvent(db, () => {
+                db.close();
+            });
         })
-            .then(res.json(model))
+            .then(res.redirect('/events'))
             .catch((err) => { console.log(err) });
     });
 
@@ -70,7 +98,5 @@ app.route('/events/:id')
             .then(res.json(result))
             .catch((err) => { console.log(err) });
     });
+
 module.exports = app;
-app.listen(3000, () => {
-    console.log('Awesome server running on port 3000');
-});
