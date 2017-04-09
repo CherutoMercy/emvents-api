@@ -8,32 +8,52 @@ const MongoClient = require('mongodb').MongoClient,
 
 const url = 'mongodb://localhost:27017/emvents';
 let db;
+let collection;
 
 MongoClient.connect(url, (err, database) => {
     assert.equal(null, err);
     db = database;
+    collection = db.collection('events');
     app.listen(3000, () => {
         console.log('Awesome server running on port 3000');
     });
 });
 
 const insertEvent = (db, callback) => {
-const collection = db.collection('documents');
-collection.insertOne(
-    {
-        id: "3",
-        title: "New Event",
-        description: "Hope this event will be created",
-        date: "1/4/2017"
-    },
-    
-    (err, result) => {
-    assert.equal(err, null);
-    assert.equal(1, result.insertedCount);
-    console.log("Inserted 1 event into the collection");
-    callback(result);
-  });
+    collection.insertOne(
+        {
+            id: "3",
+            title: "New Event",
+            description: "Hope this event will be created",
+            date: "1/4/2017"
+        },
+
+        (err, result) => {
+            assert.equal(err, null);
+            assert.equal(1, result.insertedCount);
+            console.log("Inserted 1 event into the collection");
+            callback(result);
+        });
 }
+
+const updateEvent = (db, callback) => {
+    collection.updateOne(
+        {
+            title: "New Event"
+        },
+        {
+            $set: {
+                description: "Hope this event will be updated"
+            }
+        },
+        (err, result) => {
+            assert.equal(err, null);
+            assert.equal(1, result.modifiedCount);
+            console.log("Updated 1 event into the collection");
+            callback(result);
+        }); 
+}
+
 
 app.get('/', (req, res) => {
     res.send('Get Available Events!');
@@ -71,18 +91,12 @@ app.route('/events/:id')
     })
 
     .put((req, res) => {
-        const id = req.params.id;
-        let result;
         return new Promise((req, res) => {
-            for (let i = 0; i < model.length; i++) {
-                if (model[i].id == id) {
-                    model[i].title = "Updated title";
-                    model[i].description = "Change description";
-                    result = model[i];
-                }
-            }
+             updateEvent(db, () => {
+                db.close();
+            });
         })
-            .then(res.json(result))
+            .then(res.redirect('/events'))
             .catch((err) => { console.log(err) });
 
     })
