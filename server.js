@@ -54,6 +54,20 @@ const updateEvent = (db, callback) => {
         }); 
 }
 
+const deleteEvent = (db, callback) => {
+    collection.deleteOne(
+        {
+            title: "New Event"
+        },
+        (err, result) => {
+            assert.equal(err, null);
+            assert.equal(1, result.result.n);
+            console.log("Deleted 1 event from the collection");
+            callback(result);
+        }
+    )
+}
+
 
 app.get('/', (req, res) => {
     res.send('Get Available Events!');
@@ -102,14 +116,12 @@ app.route('/events/:id')
     })
 
     .delete((req, res) => {
-        const id = req.params.id;
-        let result;
         return new Promise((req, res) => {
-            result = model.filter(model => {
-                return id.indexOf(model.id) === -1;
-            });
+            deleteEvent(db, () => {
+                db.close();
+            })
         })
-            .then(res.json(result))
+            .then(res.redirect('/events'))
             .catch((err) => { console.log(err) });
     });
 
