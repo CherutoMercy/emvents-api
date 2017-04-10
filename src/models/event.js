@@ -1,22 +1,11 @@
-const events = [
-  {
-    id: "0",
-    title: "Pair programming",
-    description: "A pair of programmers learning nodejs",
-    date: "21/03/2017"
-  },
-  {
-    id: "1",
-    title: "Nodejs meetup",
-    description: "Javascript geeks",
-    date: "12/04/2017"
-  },
-  {
-    id: "2",
-    title: "MongoDB",
-    description: "Learn how nosql works",
-    date: "16/04/2017"
-  }
-];
+const mongoose  =require('mongoose');
+const Schema    =mongoose.Schema;
 
-module.exports = events;
+const EventSchema = new Schema({
+    title: {type:String, index:true},
+    description:{type:String},
+    date: {type:Date}
+  });
+
+module.exports = mongoose.model('event', EventSchema)
+
