@@ -1,92 +1,85 @@
 const express = require('express');
 const app     = express();
-const model   = require('./src/models/event');
 const Promise = require('promise');
+const mongoose= require('mongoose');
+const bodyParser=require('body-parser');
+const Event   = require('./src/models/event');
 
-const MongoClient = require('mongodb').MongoClient,
-           assert = require('assert');
+const db      ='mongodb://localhost:27017/emvents';
+mongoose.connect(db);
 
-const url = 'mongodb://localhost:27017/emvents';
-let db;
-let collection;
-
-MongoClient.connect(url, (err, database) => {
-    assert.equal(null, err);
-    db = database;
-    collection = db.collection('events');
-    app.listen(3000, () => {
-        console.log('Awesome server running on port 3000');
-    });
-});
-
-const insertEvent = (db, callback) => {
-    collection.insertOne(
-        {
-            id: "3",
-            title: "New Event",
-            description: "Hope this event will be created",
-            date: "1/4/2017"
-        },
-
-        (err, result) => {
-            assert.equal(err, null);
-            assert.equal(1, result.insertedCount);
-            console.log("Inserted 1 event into the collection");
-            callback(result);
-        });
-}
-
-const updateEvent = (db, callback) => {
-    collection.updateOne(
-        {
-            title: "New Event"
-        },
-        {
-            $set: {
-                description: "Hope this event will be updated"
-            }
-        },
-        (err, result) => {
-            assert.equal(err, null);
-            assert.equal(1, result.modifiedCount);
-            console.log("Updated 1 event into the collection");
-            callback(result);
-        }); 
-}
-
-const deleteEvent = (db, callback) => {
-    collection.deleteOne(
-        {
-            title: "New Event"
-        },
-        (err, result) => {
-            assert.equal(err, null);
-            assert.equal(1, result.result.n);
-            console.log("Deleted 1 event from the collection");
-            callback(result);
-        }
-    )
-}
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({
+    extended:true
+}));
 
 
 app.get('/', (req, res) => {
     res.send('Get Available Events!');
 });
 
-app.route('/events')
+app.route('/Create')
+    .post((req, res) => {    
+    const newEvent = new Event();
+      newEvent.title = req.body.title;
+      newEvent.description = req.body.description;
+      newEvent.date = req.body.date;
+
+    //save it to db
+    newEvent.save ((err, event)=>{
+    if(err){
+      res.send('error saving event');
+    }else{
+      console.log(event);
+      res.send(event);
+    }
+    });   
+    });
+
+app.route('/NewEvent/:id')
+    .put((req,res) =>{
+        Event.findOneAndUpdate({
+           _id:req.params.id 
+        },
+          {$set:{title:req.body.title}},
+          {upsert:true},
+          (err,newEvent)=>{
+            if(err){
+                console.log('error occured');
+            }else{
+                console.log(newEvent);
+                res.send(newEvent);
+            }
+      });
+    })
+
+    .delete((req,res) => {
+        Event.findOneAndRemove({
+            _id:req.params.id
+        },(err,event) =>{
+            if(err){
+                res.send('error deleting');
+            }else{
+                console.log(event);
+                res.send(event);
+            }
+        });
+    });
+
+ app.route('/events')
     .get((req, res) => {
-        return new Promise((req, res) => { })
-            .then(res.json(model))
+        return new Promise((req, res) => { 
+
+        })
+            .then(res.json(Event))
             .catch((err) => { console.log(err) });
     })
 
-    .post((req, res) => {    
+    .post((req, res) => { 
         return new Promise((req, res) => {
-            insertEvent(db, () => {
-                db.close();
-            });
-        })
-            .then(res.redirect('/events'))
+            newEvent.save()
+         })
+            .then(res.json(Event))
             .catch((err) => { console.log(err) });
     });
 
@@ -100,17 +93,15 @@ app.route('/events/:id')
                 if (model[i].id == id) result = model[i];
             }
         })
-            .then(res.json(result))
+            .then(res.json(event))
             .catch((err) => { console.log(err) });
     })
 
     .put((req, res) => {
         return new Promise((req, res) => {
-             updateEvent(db, () => {
-                db.close();
-            });
+             Event.updateOne()
         })
-            .then(res.redirect('/events'))
+            .then(res.redirect(event))
             .catch((err) => { console.log(err) });
 
     })
@@ -125,4 +116,7 @@ app.route('/events/:id')
             .catch((err) => { console.log(err) });
     });
 
+app.listen(3000, () => {
+ console.log('Awesome server running on port 3000');
+});
 module.exports = app;
